@@ -1,36 +1,31 @@
 package io.github.MontoyaR;
-import com.opencsv.CSVReader;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+import com.opencsv.exceptions.CsvValidationException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.io.File;
-// You will definitely need AT LEAST ONE MORE IMPORT
 
 class Main {
-    public static void main(String[] args) {
-        // Reads a csv file and outputs the results.
-        try {
-            Scanner scanner = new Scanner(new File("src/Data/SEOExample.csv"));
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (!line.equals("")){
-                    System.out.println(line);
-                }
-            }
-            scanner.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void main(String[] args) throws IOException, CsvValidationException {
+
+        // Literally just calls our parser right now (....and is called for tests)
+        CSVParser csvP = new CSVParser("src/Data/SEOExample.csv");
+        csvP.printCsv();
+
+        // Load the json
+        /*
+        1. Create instance of GSON
+        2. Create a JsonReader object using FileReader
+        3. Array of class instances of AuthorParser, assign data from our JsonReader
+        4. foreach loop to check data
+         */
+        Gson gson = new Gson();
+        JsonReader jread = new JsonReader(new FileReader("src/Data/authors.json"));
+        AuthorParser[] authors = gson.fromJson(jread, AuthorParser[].class);
+
+        for (var element : authors) {
+            System.out.println(element.getName());
         }
-
-        // The repair file.
-        Path repairsFile = Paths.get("src/Data/SEOExample.csv");
-
-        // ADD CODE HERE
-        boolean pathExists = Files.exists(repairsFile);
     }
 }
